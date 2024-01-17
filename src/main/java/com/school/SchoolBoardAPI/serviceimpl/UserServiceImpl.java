@@ -59,11 +59,11 @@ public class UserServiceImpl implements UserService {
 		return userrepository.findById(userId)
 				.map(user -> {
 					user.setIsDeleted(true);
-//					userrepository.deleteById(userId);
+					//					userrepository.deleteById(userId);
 					structure.setStatus(HttpStatus.OK.value());
 					structure.setMessage("user deleted successfully");
 					structure.setData(mapToUserResponse(user,true));
-//                    System.out.println(user.isDeleted);
+					//                    System.out.println(user.isDeleted);
 
 					return new ResponseEntity<>(structure, HttpStatus.OK);
 				})
@@ -86,7 +86,7 @@ public class UserServiceImpl implements UserService {
 		structure.setMessage("User updated successfully");
 		structure.setData(mapToUserResponse(user,false));
 
-		return new ResponseEntity<>(structure, HttpStatus.OK);
+		return new ResponseEntity<ResponseStructure<UserResponse>>(structure, HttpStatus.OK);
 	}
 
 

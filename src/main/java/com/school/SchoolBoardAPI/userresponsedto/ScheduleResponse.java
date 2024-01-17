@@ -1,6 +1,5 @@
 package com.school.SchoolBoardAPI.userresponsedto;
 
-import java.time.Duration;
 import java.time.LocalTime;
 
 import lombok.AllArgsConstructor;
