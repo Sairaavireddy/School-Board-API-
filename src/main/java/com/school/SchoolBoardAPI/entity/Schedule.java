@@ -1,5 +1,6 @@
 package com.school.SchoolBoardAPI.entity;
 
+import java.time.Duration;
 import java.time.LocalTime;
 
 import jakarta.persistence.Entity;
@@ -8,12 +9,14 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 @Entity
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Schedule {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,10 +25,20 @@ public class Schedule {
 	private LocalTime opensAt;
 	private LocalTime closesAt;
 	private int classHoursPerDay;
-	private LocalTime classHoursLength;
+	private Duration classHoursLengthInMinutes;
 	private LocalTime breakTime;
-	private LocalTime breakLength;
-	private LocalTime lunchBreak;
-	private LocalTime lunchLength;
+	private Duration breakLengthInMinutes;
+	private LocalTime lunchTime;
+	private Duration lunchLengthInMinutes;
+	 public int getClassHoursLengthInMinutes() {
+	        return (int) classHoursLengthInMinutes.toMinutes();
+	    }
 
+	    public int getBreakLengthInMinutes() {
+	        return (int) breakLengthInMinutes.toMinutes();
+	    }
+
+	    public int getLunchLengthInMinutes() {
+	        return (int) lunchLengthInMinutes.toMinutes();
+	    }
 }

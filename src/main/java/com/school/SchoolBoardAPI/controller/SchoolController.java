@@ -2,23 +2,25 @@ package com.school.SchoolBoardAPI.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.school.SchoolBoardAPI.entity.School;
 import com.school.SchoolBoardAPI.service.SchoolService;
+import com.school.SchoolBoardAPI.userrequestdto.SchoolRequest;
+import com.school.SchoolBoardAPI.userresponsedto.SchoolResponse;
 import com.school.SchoolBoardAPI.utility.ResponseStructure;
 @RestController
-@RequestMapping("/schools")
 public class SchoolController {
 	@Autowired
 	private SchoolService schoolservice;
 	
-	@PostMapping
-	public ResponseEntity<ResponseStructure<School>> saveSchool(@RequestBody School school) {
-		return  schoolservice.SaveSchool(school);
+	@PostMapping("/users/{userId}/schools")
+	public ResponseEntity<ResponseStructure<SchoolResponse>> saveSchool(@PathVariable int userId,@RequestBody SchoolRequest schoolrequest) {
+		return  schoolservice.SaveSchool(userId, schoolrequest);
 	
 	}
 //	@ResponseBody
@@ -33,10 +35,10 @@ public class SchoolController {
 //		return schoolservice.updatedSchool(schoolId,updatedschool);
 //	
 //	}
-//	@ResponseBody
-//	@RequestMapping(value="deleteschool",method=RequestMethod.POST)
-//	public String deleteSchool() {
-//		return schoolservice.deleteSchool();
-//	
-//	}
+
+	@DeleteMapping("/schools/{schoolId}")
+	public void  deleteSchool(@PathVariable int schoolId) {
+		schoolservice.deleteSchool(schoolId);
+	
+	}
 }

@@ -7,6 +7,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,13 +23,18 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int userId;
+	@ManyToOne
+	School school;
 	@Column(unique = true)
 	private String username;
 	private String password;
 	private String firstName;
 	private String lastName;
 	private String contactNo;
+	@Column(unique = true)
 	private String email;
 	private UserRole userRole;
+	public Boolean isDeleted;
+	
 
 }

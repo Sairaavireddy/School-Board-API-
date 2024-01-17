@@ -1,17 +1,13 @@
 package com.school.SchoolBoardAPI.exception;
 
-
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Getter
-public class UserNotFoundException extends RuntimeException {
-	
+public class IllegalRequestException extends RuntimeException {
 	private String message;
 
 }
-

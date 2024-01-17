@@ -22,4 +22,6 @@ public class UserResponse {
 	private String lastName;
 	private String contactNo;
 	private String email;
-	private UserRole userRole;}
+	private UserRole userRole;
+	public Boolean isDeleted;
+	}

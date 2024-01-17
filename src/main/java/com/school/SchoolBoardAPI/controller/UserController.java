@@ -19,14 +19,16 @@ import com.school.SchoolBoardAPI.utility.ResponseStructure;
 import jakarta.validation.Valid;
 
 
+
+
 @RestController
 @RequestMapping
 public class UserController {
 	@Autowired
 	private UserService userservice;
 	
-	@PostMapping("/save")
-	public ResponseEntity<ResponseStructure<UserResponse>> saveUser(@RequestBody @Valid UserRequest userrequest) {
+	@PostMapping("/users")
+	public ResponseEntity<ResponseStructure<UserResponse>> saveUser(@Valid @RequestBody UserRequest userrequest) {
 		return userservice.saveUser(userrequest);	
 	}
 	@GetMapping("/users/{userId}")
@@ -34,7 +36,7 @@ public class UserController {
 		return userservice.findUser(userId);
 	}
 	@PutMapping("/users/{userId}")
-	public ResponseEntity<ResponseStructure<UserResponse>> updateUser(@PathVariable int userId,@RequestBody @Valid UserRequest userrequest) {
+	public ResponseEntity<ResponseStructure<UserResponse>> updateUser(@PathVariable int userId,@Valid @RequestBody UserRequest userrequest) {
 		return userservice.updateUser(userId,userrequest);
  
 	}
