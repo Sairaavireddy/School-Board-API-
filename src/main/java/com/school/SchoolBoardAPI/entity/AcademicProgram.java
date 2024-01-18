@@ -1,11 +1,15 @@
 package com.school.SchoolBoardAPI.entity;
 
-import java.time.LocalTime;
+import java.time.LocalDate;
+
 import com.school.SchoolBoardAPI.enums.ProgramType;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,10 +23,14 @@ import lombok.NoArgsConstructor;
 public class AcademicProgram {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	 @Column(name = "program_id")
 	private int programId;
 	private ProgramType programtype;
 	private String ProgramName;
-	private LocalTime beginsAt;
-	private LocalTime endsAt;
+	private LocalDate beginsAt;
+	private LocalDate endsAt;
+	@ManyToOne
+	School school;
+
 
 }

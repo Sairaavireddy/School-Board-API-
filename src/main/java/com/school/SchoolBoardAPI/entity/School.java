@@ -1,9 +1,13 @@
 package com.school.SchoolBoardAPI.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,6 +36,7 @@ public class School {
 	private String emailId;
 	private String address;
 	
-
+    @OneToMany(mappedBy = "school") 
+    List<AcademicProgram> aplist=new ArrayList<AcademicProgram>();
 
 }

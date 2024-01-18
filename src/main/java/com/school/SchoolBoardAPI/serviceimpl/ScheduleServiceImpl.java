@@ -48,10 +48,10 @@ public class ScheduleServiceImpl implements ScheduleService{
 						structure.setData(mapToScheduleResponse(schedule));
 						return new ResponseEntity<ResponseStructure<ScheduleResponse>>(structure,HttpStatus.OK);
 					} else {
-						throw new IllegalRequestException("Schedule not found for schoolId: " + schoolId);
+						throw new IllegalRequestException("Schedule not found for schoolID");
 					}
 				})
-				.orElseThrow(() -> new IllegalRequestException("School not found by Id: " + schoolId));
+				.orElseThrow(() -> new IllegalRequestException("School not found by Id"));
 	}
 	@Override
 	public ResponseEntity<ResponseStructure<ScheduleResponse>> updateSchedule(int scheduleId, ScheduleRequest scheduleRequest) {

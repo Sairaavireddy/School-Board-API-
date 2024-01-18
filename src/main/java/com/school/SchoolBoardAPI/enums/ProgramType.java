@@ -1,5 +1,9 @@
 package com.school.SchoolBoardAPI.enums;
 
 public enum ProgramType {
+	PRIMARYEDUCATION,
+	HIGHEREDUCATION,
+	PREUNIVERSITYCOLLEGE,
+	BACHELORSOFENGNIEERING,
 
 }
