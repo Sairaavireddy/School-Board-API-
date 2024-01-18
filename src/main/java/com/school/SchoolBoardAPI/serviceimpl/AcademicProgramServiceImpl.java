@@ -15,12 +15,12 @@ import com.school.SchoolBoardAPI.entity.School;
 import com.school.SchoolBoardAPI.exception.IllegalRequestException;
 import com.school.SchoolBoardAPI.repository.AcademicProgramRepository;
 import com.school.SchoolBoardAPI.repository.SchoolRepository;
+import com.school.SchoolBoardAPI.requestdto.AcademicProgramRequest;
+import com.school.SchoolBoardAPI.responsedto.AcademicProgramResponse;
 import com.school.SchoolBoardAPI.service.AcademicProgramService;
-import com.school.SchoolBoardAPI.userrequestdto.AcademicProgramRequest;
-import com.school.SchoolBoardAPI.userresponsedto.AcademicProgramResponse;
 import com.school.SchoolBoardAPI.utility.ResponseStructure;
 @Service
-public class AcademicProgramImpl implements AcademicProgramService {
+public class AcademicProgramServiceImpl implements AcademicProgramService {
     @Autowired
 	private  AcademicProgramRepository academicprogramrepository;
 	@Autowired
@@ -66,13 +66,14 @@ public class AcademicProgramImpl implements AcademicProgramService {
 	            .endsAt(academicprogramrequest.getEndsAt())
 	            .build();
 	}
-	private AcademicProgramResponse mapToAcademicProgramResponse(AcademicProgram academicProgram) {
+	public AcademicProgramResponse mapToAcademicProgramResponse(AcademicProgram academicProgram) {
 	    return AcademicProgramResponse.builder()
 	            .programId(academicProgram.getProgramId())
 	            .programtype(academicProgram.getProgramtype())
 	            .ProgramName(academicProgram.getProgramName())
 	            .beginsAt(academicProgram.getBeginsAt())
 	            .endsAt(academicProgram.getEndsAt())
+	            .Slist(academicProgram.getSlist())
 	            .build();
 	    
 	}

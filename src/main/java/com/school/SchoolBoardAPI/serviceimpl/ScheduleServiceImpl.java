@@ -8,9 +8,9 @@ import com.school.SchoolBoardAPI.entity.Schedule;
 import com.school.SchoolBoardAPI.exception.IllegalRequestException;
 import com.school.SchoolBoardAPI.repository.ScheduleRepository;
 import com.school.SchoolBoardAPI.repository.SchoolRepository;
+import com.school.SchoolBoardAPI.requestdto.ScheduleRequest;
+import com.school.SchoolBoardAPI.responsedto.ScheduleResponse;
 import com.school.SchoolBoardAPI.service.ScheduleService;
-import com.school.SchoolBoardAPI.userrequestdto.ScheduleRequest;
-import com.school.SchoolBoardAPI.userresponsedto.ScheduleResponse;
 import com.school.SchoolBoardAPI.utility.ResponseStructure;
 @Service
 public class ScheduleServiceImpl implements ScheduleService{

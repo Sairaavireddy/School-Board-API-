@@ -1,41 +1,33 @@
 package com.school.SchoolBoardAPI.entity;
 
-import java.time.LocalDate;
 import java.util.List;
 
-import com.school.SchoolBoardAPI.enums.ProgramType;
-
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @AllArgsConstructor
-@NoArgsConstructor
 @Builder
+@NoArgsConstructor
 @Data
-public class AcademicProgram {
+@Getter
+@Setter
+public class Subject {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	 @Column(name = "program_id")
-	private int programId;
-	private ProgramType programtype;
-	private String ProgramName;
-	private LocalDate beginsAt;
-	private LocalDate endsAt;
-	@ManyToOne
-	School school;
+	private int subjectId;
+	private String subjectName;
 	
 	@ManyToMany
-	List<Subject> Slist;
-
+	List<AcademicProgram> APlist;
 
 }

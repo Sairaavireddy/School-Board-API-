@@ -1,4 +1,4 @@
-package com.school.SchoolBoardAPI.userrequestdto;
+package com.school.SchoolBoardAPI.requestdto;
 
 import java.time.LocalDate;
 

@@ -2,8 +2,8 @@ package com.school.SchoolBoardAPI.service;
 
 import org.springframework.http.ResponseEntity;
 
-import com.school.SchoolBoardAPI.userrequestdto.ScheduleRequest;
-import com.school.SchoolBoardAPI.userresponsedto.ScheduleResponse;
+import com.school.SchoolBoardAPI.requestdto.ScheduleRequest;
+import com.school.SchoolBoardAPI.responsedto.ScheduleResponse;
 import com.school.SchoolBoardAPI.utility.ResponseStructure;
 
 public interface ScheduleService {

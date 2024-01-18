@@ -1,5 +1,6 @@
-package com.school.SchoolBoardAPI.userresponsedto;
+package com.school.SchoolBoardAPI.requestdto;
 
+import java.time.Duration;
 import java.time.LocalTime;
 
 import lombok.AllArgsConstructor;
@@ -12,9 +13,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ScheduleResponse {
+public class ScheduleRequest {
 	
-	private int scheduleId;
 	private LocalTime opensAt;
 	private LocalTime closesAt;
 	private int classHoursPerDay;
@@ -22,6 +22,8 @@ public class ScheduleResponse {
 	private LocalTime breakTime;
 	private int breakLengthInMinutes;
 	private LocalTime lunchTime;
-	private int lunchLengthInMinutes;
+	private int  lunchLengthInMinutes;
 	
+
+
 }

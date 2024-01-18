@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.school.SchoolBoardAPI.entity.School;
+import com.school.SchoolBoardAPI.requestdto.SchoolRequest;
+import com.school.SchoolBoardAPI.responsedto.SchoolResponse;
 import com.school.SchoolBoardAPI.service.SchoolService;
-import com.school.SchoolBoardAPI.userrequestdto.SchoolRequest;
-import com.school.SchoolBoardAPI.userresponsedto.SchoolResponse;
 import com.school.SchoolBoardAPI.utility.ResponseStructure;
 @RestController
 public class SchoolController {

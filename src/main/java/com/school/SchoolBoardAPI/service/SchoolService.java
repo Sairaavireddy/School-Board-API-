@@ -3,8 +3,8 @@ package com.school.SchoolBoardAPI.service;
 import org.springframework.http.ResponseEntity;
 
 import com.school.SchoolBoardAPI.entity.School;
-import com.school.SchoolBoardAPI.userrequestdto.SchoolRequest;
-import com.school.SchoolBoardAPI.userresponsedto.SchoolResponse;
+import com.school.SchoolBoardAPI.requestdto.SchoolRequest;
+import com.school.SchoolBoardAPI.responsedto.SchoolResponse;
 import com.school.SchoolBoardAPI.utility.ResponseStructure;
 
 public interface SchoolService {

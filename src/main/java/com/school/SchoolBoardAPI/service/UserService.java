@@ -2,8 +2,8 @@ package com.school.SchoolBoardAPI.service;
 
 import org.springframework.http.ResponseEntity;
 
-import com.school.SchoolBoardAPI.userrequestdto.UserRequest;
-import com.school.SchoolBoardAPI.userresponsedto.UserResponse;
+import com.school.SchoolBoardAPI.requestdto.UserRequest;
+import com.school.SchoolBoardAPI.responsedto.UserResponse;
 import com.school.SchoolBoardAPI.utility.ResponseStructure;
 
 public interface UserService {

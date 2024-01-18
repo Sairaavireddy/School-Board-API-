@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 
-import com.school.SchoolBoardAPI.userrequestdto.AcademicProgramRequest;
-import com.school.SchoolBoardAPI.userresponsedto.AcademicProgramResponse;
+import com.school.SchoolBoardAPI.requestdto.AcademicProgramRequest;
+import com.school.SchoolBoardAPI.responsedto.AcademicProgramResponse;
 import com.school.SchoolBoardAPI.utility.ResponseStructure;
 
 public interface AcademicProgramService {

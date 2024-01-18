@@ -1,4 +1,4 @@
-package com.school.SchoolBoardAPI.userrequestdto;
+package com.school.SchoolBoardAPI.responsedto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,10 +8,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SchoolRequest {
+@Builder
+public class SchoolResponse {
+	private int schoolId;
 	private String schoolName;
 	private long contactNo;
 	private String emailId;

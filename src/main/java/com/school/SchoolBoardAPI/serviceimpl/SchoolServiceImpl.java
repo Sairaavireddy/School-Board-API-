@@ -11,9 +11,9 @@ import com.school.SchoolBoardAPI.exception.IllegalRequestException;
 import com.school.SchoolBoardAPI.exception.UserNotFoundExceptionById;
 import com.school.SchoolBoardAPI.repository.SchoolRepository;
 import com.school.SchoolBoardAPI.repository.UserRepository;
+import com.school.SchoolBoardAPI.requestdto.SchoolRequest;
+import com.school.SchoolBoardAPI.responsedto.SchoolResponse;
 import com.school.SchoolBoardAPI.service.SchoolService;
-import com.school.SchoolBoardAPI.userrequestdto.SchoolRequest;
-import com.school.SchoolBoardAPI.userresponsedto.SchoolResponse;
 import com.school.SchoolBoardAPI.utility.ResponseStructure;
 @Service
 public class SchoolServiceImpl implements SchoolService {

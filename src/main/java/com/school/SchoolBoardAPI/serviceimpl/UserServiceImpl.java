@@ -10,9 +10,9 @@ import com.school.SchoolBoardAPI.entity.User;
 import com.school.SchoolBoardAPI.enums.UserRole;
 import com.school.SchoolBoardAPI.exception.UserNotFoundExceptionById;
 import com.school.SchoolBoardAPI.repository.UserRepository;
+import com.school.SchoolBoardAPI.requestdto.UserRequest;
+import com.school.SchoolBoardAPI.responsedto.UserResponse;
 import com.school.SchoolBoardAPI.service.UserService;
-import com.school.SchoolBoardAPI.userrequestdto.UserRequest;
-import com.school.SchoolBoardAPI.userresponsedto.UserResponse;
 import com.school.SchoolBoardAPI.utility.ResponseStructure;
 
 @Service

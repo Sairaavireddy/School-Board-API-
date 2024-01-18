@@ -1,4 +1,4 @@
-package com.school.SchoolBoardAPI.userresponsedto;
+package com.school.SchoolBoardAPI.responsedto;
 import com.school.SchoolBoardAPI.enums.UserRole;
 
 import jakarta.persistence.Column;

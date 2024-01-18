@@ -11,9 +11,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.school.SchoolBoardAPI.requestdto.UserRequest;
+import com.school.SchoolBoardAPI.responsedto.UserResponse;
 import com.school.SchoolBoardAPI.service.UserService;
-import com.school.SchoolBoardAPI.userrequestdto.UserRequest;
-import com.school.SchoolBoardAPI.userresponsedto.UserResponse;
 import com.school.SchoolBoardAPI.utility.ResponseStructure;
 
 import jakarta.validation.Valid;

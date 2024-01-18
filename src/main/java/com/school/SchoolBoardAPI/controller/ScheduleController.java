@@ -8,9 +8,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.school.SchoolBoardAPI.requestdto.ScheduleRequest;
+import com.school.SchoolBoardAPI.responsedto.ScheduleResponse;
 import com.school.SchoolBoardAPI.service.ScheduleService;
-import com.school.SchoolBoardAPI.userrequestdto.ScheduleRequest;
-import com.school.SchoolBoardAPI.userresponsedto.ScheduleResponse;
 import com.school.SchoolBoardAPI.utility.ResponseStructure;
 
 @RestController

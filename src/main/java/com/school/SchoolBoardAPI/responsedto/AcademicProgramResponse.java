@@ -1,7 +1,9 @@
-package com.school.SchoolBoardAPI.userresponsedto;
+package com.school.SchoolBoardAPI.responsedto;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import com.school.SchoolBoardAPI.entity.Subject;
 import com.school.SchoolBoardAPI.enums.ProgramType;
 
 import lombok.AllArgsConstructor;
@@ -20,4 +22,5 @@ public class AcademicProgramResponse {
 	private String ProgramName;
 	private LocalDate beginsAt;
 	private LocalDate endsAt;
+	List<Subject> Slist;
 }
