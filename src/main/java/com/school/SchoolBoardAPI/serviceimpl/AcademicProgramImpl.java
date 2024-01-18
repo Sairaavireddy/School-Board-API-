@@ -1,11 +1,17 @@
 package com.school.SchoolBoardAPI.serviceimpl;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.school.SchoolBoardAPI.entity.AcademicProgram;
+import com.school.SchoolBoardAPI.entity.School;
 import com.school.SchoolBoardAPI.exception.IllegalRequestException;
 import com.school.SchoolBoardAPI.repository.AcademicProgramRepository;
 import com.school.SchoolBoardAPI.repository.SchoolRepository;
@@ -34,10 +40,24 @@ public class AcademicProgramImpl implements AcademicProgramService {
 	        structure.setStatus(HttpStatus.CREATED.value());
 	        structure.setMessage("Academic Program object created Successfully");
 	        structure.setData(mapToAcademicProgramResponse(academicProgram));
-	        return new ResponseEntity<>(structure, HttpStatus.CREATED);
+	        return new ResponseEntity<ResponseStructure<AcademicProgramResponse>>(structure, HttpStatus.CREATED);
 	    }).orElseThrow(() -> new IllegalRequestException("School not found"));
 	}
-
+	@Override
+	public List<AcademicProgramResponse> findallAcademicPrograms(int schoolId) {
+	    Optional<School> optionalSchool = schoolrepository.findById(schoolId);
+	    if (optionalSchool.isPresent()) {
+	        School school = optionalSchool.get();
+	        List<AcademicProgram> academicPrograms = school.getAplist();
+	        List<AcademicProgramResponse> responses = new ArrayList<>();
+	        for (AcademicProgram academicProgram : academicPrograms) {
+	            responses.add(mapToAcademicProgramResponse(academicProgram));
+	        }
+	        return responses;
+	    } else {
+	        return Collections.emptyList();
+	    }
+	}
 	private AcademicProgram mapToAcademicProgram(AcademicProgramRequest academicprogramrequest) {
 	    return AcademicProgram.builder()
 	            .ProgramName(academicprogramrequest.getProgramName())
@@ -56,5 +76,7 @@ public class AcademicProgramImpl implements AcademicProgramService {
 	            .build();
 	    
 	}
+
+	
 
 }

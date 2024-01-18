@@ -1,7 +1,10 @@
 package com.school.SchoolBoardAPI.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,6 +23,10 @@ public class AcademicProgramController {
 	@PostMapping("/schools/{schoolId}/academicprograms")
 	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> saveAcademicProgram(@PathVariable int schoolId,@RequestBody AcademicProgramRequest academicprogramrequest ){
 		return academicProgramservice.saveacademicprogram(schoolId, academicprogramrequest);
+	}
+	@GetMapping("/schools/{schoolId}/academicprograms")
+	public List<AcademicProgramResponse> findallAcademicPrograms(@PathVariable int schoolId){
+		return academicProgramservice.findallAcademicPrograms(schoolId);
 	}
 
 }
