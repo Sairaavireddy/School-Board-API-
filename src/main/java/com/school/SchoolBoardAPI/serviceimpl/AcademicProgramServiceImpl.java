@@ -12,9 +12,11 @@ import org.springframework.stereotype.Service;
 
 import com.school.SchoolBoardAPI.entity.AcademicProgram;
 import com.school.SchoolBoardAPI.entity.School;
+import com.school.SchoolBoardAPI.entity.User;
 import com.school.SchoolBoardAPI.exception.IllegalRequestException;
 import com.school.SchoolBoardAPI.repository.AcademicProgramRepository;
 import com.school.SchoolBoardAPI.repository.SchoolRepository;
+import com.school.SchoolBoardAPI.repository.UserRepository;
 import com.school.SchoolBoardAPI.requestdto.AcademicProgramRequest;
 import com.school.SchoolBoardAPI.responsedto.AcademicProgramResponse;
 import com.school.SchoolBoardAPI.service.AcademicProgramService;
@@ -27,6 +29,8 @@ public class AcademicProgramServiceImpl implements AcademicProgramService {
 	private ResponseStructure<AcademicProgramResponse> structure;
 	@Autowired
 	private SchoolRepository schoolrepository;
+	@Autowired
+	private UserRepository userrepository;
 	@Override
 	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> saveacademicprogram(int schoolId,
 	        AcademicProgramRequest academicprogramrequest) {
@@ -43,6 +47,7 @@ public class AcademicProgramServiceImpl implements AcademicProgramService {
 	        return new ResponseEntity<ResponseStructure<AcademicProgramResponse>>(structure, HttpStatus.CREATED);
 	    }).orElseThrow(() -> new IllegalRequestException("School not found"));
 	}
+	
 	@Override
 	public List<AcademicProgramResponse> findallAcademicPrograms(int schoolId) {
 	    Optional<School> optionalSchool = schoolrepository.findById(schoolId);
@@ -58,6 +63,20 @@ public class AcademicProgramServiceImpl implements AcademicProgramService {
 	        return Collections.emptyList();
 	    }
 	}
+	
+	@Override
+	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> assignUser(int userId, int programId) {
+		 academicprogramrepository.findById(programId).map(program->{
+			 userrepository.findById(userId).map(user->{
+				 
+			 })
+		                .orElseThrow(() -> new UserNotFoundException("User not found"));
+		 })
+				
+		}
+	            .orElseThrow(() -> new IllegalRequestException("Academic Program not found"));
+	}
+
 	private AcademicProgram mapToAcademicProgram(AcademicProgramRequest academicprogramrequest) {
 	    return AcademicProgram.builder()
 	            .ProgramName(academicprogramrequest.getProgramName())
@@ -77,7 +96,7 @@ public class AcademicProgramServiceImpl implements AcademicProgramService {
 	            .build();
 	    
 	}
-
+	
 	
 
 }

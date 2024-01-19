@@ -28,37 +28,41 @@ public class SubjectServiceImpl implements SubjectService {
 	private ResponseStructure<AcademicProgramResponse> structure;
 	@Autowired
 	private AcademicProgramServiceImpl academicprogramserviceimpl;
+
 	@Override
 	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> addSubject(int programId, SubjectRequest subjectRequest) {
-		return academicProgramRepository.findById(programId)
-				.map(program -> {
-					List<Subject> subjects = new ArrayList<>();
+	    return academicProgramRepository.findById(programId)
+	            .map(program -> {
+	                List<Subject> subjects = (program.getSlist() != null) ? program.getSlist() : new ArrayList<>();
 
-					subjectRequest.getSubjectName().forEach(subjectName -> {
-						String lowercaseName = subjectName.toLowerCase();
+	                // Add new subjects specified by the client
+	                subjectRequest.getSubjectName().forEach(name -> {
+	                    boolean isPresent = subjects.stream().anyMatch(subject -> name.equalsIgnoreCase(subject.getSubjectName()));
+	                    if (!isPresent) {
+	                        subjects.add(subjectrepository.findBySubjectName(name)
+	                                .orElseGet(() -> subjectrepository.save(Subject.builder().subjectName(name).build())));
+	                    }
+	                });
 
-						Subject subject = subjectrepository.findBySubjectName(lowercaseName)
-								.map(existingSubject -> existingSubject)
-								.orElseGet(() -> {
-									Subject newSubject = new Subject();
-									newSubject.setSubjectName(lowercaseName);
-									return subjectrepository.save(newSubject);
-								});
+	                // Remove subjects that are not specified by the client
+	                List<Subject> toBeRemoved = new ArrayList<>();
+	                subjects.forEach(subject -> {
+	                    boolean isPresent = subjectRequest.getSubjectName().stream()
+	                            .anyMatch(name -> subject.getSubjectName().equalsIgnoreCase(name));
+	                    if (!isPresent) {
+	                        toBeRemoved.add(subject);
+	                    }
+	                });
+	                subjects.removeAll(toBeRemoved);
 
-						subjects.add(subject);
-					});
+	                program.setSlist(subjects);
+	                academicProgramRepository.save(program);
 
-					program.setSlist(subjects);
-					academicProgramRepository.save(program);
-
-					ResponseStructure<AcademicProgramResponse> structure = new ResponseStructure<>();
-					structure.setStatus(HttpStatus.CREATED.value());
-					structure.setMessage("Updated the subject list to Academic Program");
-					structure.setData(academicprogramserviceimpl.mapToAcademicProgramResponse(program));
-					return new ResponseEntity<ResponseStructure<AcademicProgramResponse>>(structure, HttpStatus.CREATED);
-				})
-				.orElseThrow(() -> new IllegalRequestException("Academic Program not found"));
+	                structure.setStatus(HttpStatus.CREATED.value());
+	                structure.setMessage("Created the subject list for the Academic Program");
+	                structure.setData(academicprogramserviceimpl.mapToAcademicProgramResponse(program));
+	                return new ResponseEntity<ResponseStructure<AcademicProgramResponse>>(structure, HttpStatus.CREATED);
+	            })
+	            .orElseThrow(() -> new IllegalRequestException("Academic Program not found"));
 	}
-
-
 }

@@ -13,6 +13,4 @@ public interface SujectRepository extends JpaRepository<Subject, Integer>{
 
 	Optional<Subject> findBySubjectName(String name);
 	
-	
-
 }

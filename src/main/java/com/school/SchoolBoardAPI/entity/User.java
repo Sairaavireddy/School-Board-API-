@@ -1,5 +1,7 @@
 package com.school.SchoolBoardAPI.entity;
 
+import java.util.List;
+
 import com.school.SchoolBoardAPI.enums.UserRole;
 
 import jakarta.persistence.Column;
@@ -8,6 +10,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,6 +38,9 @@ public class User {
 	private String email;
 	private UserRole userRole;
 	public Boolean isDeleted;
+	
+	@OneToMany(mappedBy ="Userlist")
+	private List<AcademicProgram> Aprogramlist;
 	
 
 }
