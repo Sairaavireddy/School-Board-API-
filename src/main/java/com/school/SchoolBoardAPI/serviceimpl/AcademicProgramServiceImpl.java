@@ -13,7 +13,9 @@ import org.springframework.stereotype.Service;
 import com.school.SchoolBoardAPI.entity.AcademicProgram;
 import com.school.SchoolBoardAPI.entity.School;
 import com.school.SchoolBoardAPI.entity.User;
+import com.school.SchoolBoardAPI.enums.UserRole;
 import com.school.SchoolBoardAPI.exception.IllegalRequestException;
+import com.school.SchoolBoardAPI.exception.UserNotFoundExceptionById;
 import com.school.SchoolBoardAPI.repository.AcademicProgramRepository;
 import com.school.SchoolBoardAPI.repository.SchoolRepository;
 import com.school.SchoolBoardAPI.repository.UserRepository;
@@ -65,17 +67,51 @@ public class AcademicProgramServiceImpl implements AcademicProgramService {
 	}
 	
 	@Override
-	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> assignUser(int userId, int programId) {
-		 academicprogramrepository.findById(programId).map(program->{
-			 userrepository.findById(userId).map(user->{
-				 
-			 })
-		                .orElseThrow(() -> new UserNotFoundException("User not found"));
-		 })
-				
-		}
+	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> assignUser(
+	        int programId, int userId) {
+	    AcademicProgram academicProgram = academicprogramrepository.findById(programId)
 	            .orElseThrow(() -> new IllegalRequestException("Academic Program not found"));
+
+	    // Validate the user
+	    User user = userrepository.findById(userId)
+	            .orElseThrow(() -> new UserNotFoundExceptionById("User not found"));
+
+	    // Check if the user is an ADMIN
+	    if (user.getUserRole() == UserRole.ADMIN) {
+	        throw new IllegalRequestException("Admin cannot be associated with any Academic Program");
+	    }
+
+	    // Determine the role of the user in the Academic Program
+	    UserRole userRoleInProgram = determineUserRoleForAcademicProgram(user);
+
+	    // Assign the user to the Academic Program using lambda expressions and map method
+	    academicProgram.getUserlist().addAll(
+	            userRoleInProgram == UserRole.TEACHER ?
+	                    Collections.singletonList(user) : Collections.emptyList()
+	    );
+
+	    academicProgram.getUserlist().addAll(
+	            userRoleInProgram == UserRole.STUDENT ?
+	                    Collections.singletonList(user) : Collections.emptyList()
+	    );
+
+	    academicprogramrepository.save(academicProgram);
+
+	    // Return the response
+	    ResponseStructure<AcademicProgramResponse> structure = new ResponseStructure<>();
+	    structure.setStatus(HttpStatus.CREATED.value());
+	    structure.setMessage("User assigned to Academic Program successfully");
+	    structure.setData(mapToAcademicProgramResponse(academicProgram));
+	    return ResponseEntity.ok(structure);
 	}
+
+	private UserRole determineUserRoleForAcademicProgram(User user) {
+	    // You may implement your logic to determine the role of the user in the Academic Program
+	    // For example, check user roles, or based on some other business logic.
+	    // This is just a placeholder, adapt it based on your actual requirements.
+	    return user.getUserRole();
+	}
+
 
 	private AcademicProgram mapToAcademicProgram(AcademicProgramRequest academicprogramrequest) {
 	    return AcademicProgram.builder()

@@ -41,6 +41,7 @@ public class User {
 	
 	@OneToMany(mappedBy ="Userlist")
 	private List<AcademicProgram> Aprogramlist;
-	
+	@ManyToOne
+	private Subject subject;
 
 }

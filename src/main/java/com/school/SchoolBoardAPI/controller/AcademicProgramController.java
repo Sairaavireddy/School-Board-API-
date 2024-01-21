@@ -28,7 +28,7 @@ public class AcademicProgramController {
 	public List<AcademicProgramResponse> findallAcademicPrograms(@PathVariable int schoolId){
 		return academicProgramservice.findallAcademicPrograms(schoolId);
 	}
-   @PutMapping("/academic-programs/{programId}/users/{userId}")
+   @PutMapping("/academicprograms/{programId}/users/{userId}")
    private ResponseEntity<ResponseStructure<AcademicProgramResponse>> assignUser(@PathVariable int userId,@PathVariable int programId){
 	   return academicProgramservice.assignUser(userId,programId);
    }
