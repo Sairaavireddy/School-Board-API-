@@ -15,7 +15,7 @@ import com.school.SchoolBoardAPI.entity.User;
 import com.school.SchoolBoardAPI.enums.UserRole;
 import com.school.SchoolBoardAPI.exception.IllegalRequestException;
 import com.school.SchoolBoardAPI.repository.AcademicProgramRepository;
-import com.school.SchoolBoardAPI.repository.SujectRepository;
+import com.school.SchoolBoardAPI.repository.SubjectRepository;
 import com.school.SchoolBoardAPI.repository.UserRepository;
 import com.school.SchoolBoardAPI.requestdto.SubjectRequest;
 import com.school.SchoolBoardAPI.responsedto.AcademicProgramResponse;
@@ -27,7 +27,7 @@ import com.school.SchoolBoardAPI.utility.ResponseStructure;
 public class SubjectServiceImpl implements SubjectService {
 
 	@Autowired
-	private SujectRepository subjectrepository;
+	private SubjectRepository subjectrepository;
 	@Autowired
 	private AcademicProgramRepository academicProgramRepository;
 	@Autowired
@@ -36,6 +36,8 @@ public class SubjectServiceImpl implements SubjectService {
 	private AcademicProgramServiceImpl academicprogramserviceimpl;
     @Autowired
     private UserRepository userrepository;
+    @Autowired
+    private UserServiceImpl userserviceimpl;
 	@Override
 	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> addSubject(int programId, SubjectRequest subjectRequest) {
 		return academicProgramRepository.findById(programId)
@@ -120,7 +122,41 @@ public class SubjectServiceImpl implements SubjectService {
 //        }
 //    }
 
-	private SubjectResponse mapToSubjectResponses(Subject subject) {
+	@Override
+    public ResponseEntity<ResponseStructure<UserResponse>> assignSubjectToUser(int subjectId, int userId) {
+        // Validate if the subject exists
+        Subject subject = subjectrepository.findById(subjectId)
+                .orElseThrow(() -> new IllegalRequestException("Subject not found with ID"));
+
+        // Validate if the user exists
+        User user = userrepository.findById(userId)
+                .orElseThrow(() -> new IllegalRequestException("User not found with ID"));
+
+        // Check if the user has the role "ADMIN" or "STUDENT"
+        if (user.getUserRole() == UserRole.ADMIN || user.getUserRole() == UserRole.STUDENT) {
+            throw new IllegalRequestException("Cannot assign subject to users with role ADMIN or STUDENT");
+        }
+
+        List<Subject> userSubjects = (List<Subject>) user.getSubject();
+        if (!userSubjects.contains(subject)) {
+            userSubjects.add(subject);
+            user.setSubject(subject); // Set the updated list of subjects to the user
+            userrepository.save(user);
+
+            // Create a response structure
+            ResponseStructure<UserResponse> responseStructure = new ResponseStructure<>();
+            responseStructure.setStatus(HttpStatus.OK.value());
+            responseStructure.setMessage("Subject assigned to the user");
+            responseStructure.setData(userserviceimpl.mapToUserResponse(user, false));
+
+            return new ResponseEntity<>(responseStructure, HttpStatus.OK);
+        } else {
+            throw new IllegalRequestException("Subject is already assigned to the user");
+        }
+    }
+
+	
+	SubjectResponse mapToSubjectResponses(Subject subject) {
 		return SubjectResponse.builder()
 				.subjectId(subject.getSubjectId())
 				.subjectName(subject.getSubjectName())

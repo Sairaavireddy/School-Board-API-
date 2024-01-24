@@ -1,4 +1,5 @@
 package com.school.SchoolBoardAPI.responsedto;
+import com.school.SchoolBoardAPI.entity.Subject;
 import com.school.SchoolBoardAPI.enums.UserRole;
 
 import jakarta.persistence.Column;
@@ -24,4 +25,5 @@ public class UserResponse {
 	private String email;
 	private UserRole userRole;
 	public Boolean isDeleted;
+	private Subject subject;
 	}

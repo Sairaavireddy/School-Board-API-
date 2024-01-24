@@ -37,9 +37,9 @@ public class SubjectController {
 	public ResponseEntity<ResponseStructure<List<SubjectResponse>>> findAllSubjects(){
 		return subjectservice.findAllSubjects();
 	}
-//	@PutMapping("/subjects/{subjectId}/users/{userId}")
-//	public ResponseEntity<ResponseStructure<UserResponse>> assignSubjectToUser(@PathVariable int subjectId,@PathVariable int userId){
-//		return subjectservice.assignSubjectToUser(subjectId,userId);
-//	}
+	@PutMapping("/subjects/{subjectId}/users/{userId}")
+	public ResponseEntity<ResponseStructure<UserResponse>> assignSubjectToUser(@PathVariable int subjectId,@PathVariable int userId){
+		return subjectservice.assignSubjectToUser(subjectId,userId);
+	}
 
 }

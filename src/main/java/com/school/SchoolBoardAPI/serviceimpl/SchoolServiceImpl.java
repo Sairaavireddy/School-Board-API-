@@ -3,6 +3,7 @@ package com.school.SchoolBoardAPI.serviceimpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.school.SchoolBoardAPI.entity.School;
@@ -25,8 +26,9 @@ public class SchoolServiceImpl implements SchoolService {
     @Autowired
     UserRepository userrepository;
 	@Override
-	public ResponseEntity<ResponseStructure<SchoolResponse>> SaveSchool(int userId,SchoolRequest schoolrequest) {
-		return userrepository.findById(userId).map(u->{
+	public ResponseEntity<ResponseStructure<SchoolResponse>> SaveSchool(SchoolRequest schoolrequest) {
+		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+		return userrepository.findByusername(username).map(u->{
 			if(u.getUserRole().equals(UserRole.ADMIN)) {
 				if(u.getSchool()==null) {
 					School school = mapToSchool(schoolrequest);

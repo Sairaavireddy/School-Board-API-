@@ -9,7 +9,7 @@ import com.school.SchoolBoardAPI.entity.AcademicProgram;
 import com.school.SchoolBoardAPI.entity.Subject;
 
 @Repository
-public interface SujectRepository extends JpaRepository<Subject, Integer>{
+public interface SubjectRepository extends JpaRepository<Subject, Integer>{
 
 	Optional<Subject> findBySubjectName(String name);
 	

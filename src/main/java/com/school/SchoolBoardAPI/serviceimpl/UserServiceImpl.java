@@ -16,6 +16,7 @@ import com.school.SchoolBoardAPI.responsedto.UserResponse;
 import com.school.SchoolBoardAPI.service.UserService;
 import com.school.SchoolBoardAPI.utility.ResponseStructure;
 
+import jakarta.validation.Valid;
 import jakarta.websocket.Encoder;
 
 @Service
@@ -24,14 +25,39 @@ public class UserServiceImpl implements UserService {
 	private UserRepository userrepository;
 	@Autowired
 	private ResponseStructure<UserResponse> structure;
-	
+
 	@Autowired
 	private PasswordEncoder encoder;
-	
-	
+//	@Autowired
+//	private SubjectServiceImpl subjectserviceimpl;
+
+
+
+	@Override
+	public ResponseEntity<ResponseStructure<UserResponse>> registerAdmin(@Valid UserRequest userrequest) {
+		         if(userrequest.getUserRole()==UserRole.ADMIN) {
+		// Fetch existing users from the repository
+				List<User> existingUsers = userrepository.findAll();
+
+				// Check if the requested role is ADMIN and if an ADMIN already exists
+				if (userrequest.getUserRole() == UserRole.ADMIN && isAdminExists(existingUsers)) {
+					throw new IllegalArgumentException("An ADMIN user already exists.");
+				}
+		         }
+		         else {
+		        	 throw new IllegalArgumentException("only Admin can register");
+		         }
+				User user = userrepository.save(mapToUser(userrequest,false));
+				structure.setStatus(HttpStatus.CREATED.value());
+				structure.setMessage("User saved Sucessfully");
+				structure.setData(mapToUserResponse(user,false));
+				return new ResponseEntity<ResponseStructure<UserResponse>>(structure,HttpStatus.CREATED);
+		         
+	}
+
 	
 	@Override
-	public ResponseEntity<ResponseStructure<UserResponse>> saveUser(UserRequest userrequest) {
+	public ResponseEntity<ResponseStructure<UserResponse>> addOtherUsers(UserRequest userrequest) {
 		// Fetch existing users from the repository
 		List<User> existingUsers = userrepository.findAll();
 
@@ -111,7 +137,7 @@ public class UserServiceImpl implements UserService {
 				.isDeleted(isDeleted)
 				.build();
 	}
-	private UserResponse mapToUserResponse(User user, boolean isDeleted) {
+	UserResponse mapToUserResponse(User user, boolean isDeleted) {
 		return UserResponse.builder()
 				.userId(user.getUserId())
 				.username(user.getUsername())
@@ -121,6 +147,7 @@ public class UserServiceImpl implements UserService {
 				.email(user.getEmail())
 				.userRole(user.getUserRole())
 				.isDeleted(user.getIsDeleted())
+				
 				.build();
 
 
@@ -135,6 +162,9 @@ public class UserServiceImpl implements UserService {
 		return false;
 	}
 
+
+
+	
 
 
 

@@ -16,4 +16,6 @@ public class SubjectResponse {
 	private int subjectId;
 
 	private String subjectName;
+	
+	
 }

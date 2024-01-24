@@ -2,6 +2,7 @@ package com.school.SchoolBoardAPI.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,10 +18,10 @@ import com.school.SchoolBoardAPI.utility.ResponseStructure;
 public class SchoolController {
 	@Autowired
 	private SchoolService schoolservice;
-	
-	@PostMapping("/users/{userId}/schools")
-	public ResponseEntity<ResponseStructure<SchoolResponse>> saveSchool(@PathVariable int userId,@RequestBody SchoolRequest schoolrequest) {
-		return  schoolservice.SaveSchool(userId, schoolrequest);
+	@PreAuthorize("hasAuthority('ADMIN')")
+	@PostMapping("/users/schools")
+	public ResponseEntity<ResponseStructure<SchoolResponse>> saveSchool(@RequestBody SchoolRequest schoolrequest) {
+		return  schoolservice.SaveSchool( schoolrequest);
 	
 	}
 //	@ResponseBody
