@@ -91,34 +91,34 @@ public class SubjectServiceImpl implements SubjectService {
                 .collect(Collectors.toList());
 	}
 
-	@Override
-	public ResponseEntity<ResponseStructure<UserResponse>> assignSubjectToUser(int subjectId, int userId) {
-		 // Validate if the subject exists
-        Subject subject = subjectrepository.findById(subjectId)
-                .orElseThrow(() -> new IllegalRequestException("Subject not found with ID"));
-
-        // Validate if the user exists
-        User user = userrepository.findById(userId)
-                .orElseThrow(() -> new IllegalRequestException("User not found with ID"));
-
-        // Check if the user has the role "ADMIN" or "STUDENT"
-        if (user.getUserRole() == UserRole.ADMIN || user.getUserRole() == UserRole.STUDENT) {
-            throw new IllegalRequestException("Cannot assign subject to users with role ADMIN or STUDENT");
-        }
-
-        // Assign the subject to the user
-        if (!((List<Subject>) user.getSubject()).contains(subject)) {
-            ((List<Subject>) user.getSubject()).add(subject);
-            userrepository.save(user);
-            structure.setStatus(HttpStatus.OK.value());
-    	    structure.setMessage("Subject is  assigned to the user");
-    	    structure.setData(Collections.singletonList(mapToSubjectResponses(subject)));
-
-    	    return new ResponseEntity<ResponseStructure<UserResponse>>(HttpStatus.OK);
-        } else {
-              throw new IllegalRequestException("Subject is already assigned to the user");
-        }
-    }
+//	@Override
+//	public ResponseEntity<ResponseStructure<UserResponse>> assignSubjectToUser(int subjectId, int userId) {
+//		 // Validate if the subject exists
+//        Subject subject = subjectrepository.findById(subjectId)
+//                .orElseThrow(() -> new IllegalRequestException("Subject not found with ID"));
+//
+//        // Validate if the user exists
+//        User user = userrepository.findById(userId)
+//                .orElseThrow(() -> new IllegalRequestException("User not found with ID"));
+//
+//        // Check if the user has the role "ADMIN" or "STUDENT"
+//        if (user.getUserRole() == UserRole.ADMIN || user.getUserRole() == UserRole.STUDENT) {
+//            throw new IllegalRequestException("Cannot assign subject to users with role ADMIN or STUDENT");
+//        }
+//
+//        // Assign the subject to the user
+//        if (!((List<Subject>) user.getSubject()).contains(subject)) {
+//            ((List<Subject>) user.getSubject()).add(subject);
+//            userrepository.save(user);
+//            structure.setStatus(HttpStatus.OK.value());
+//    	    structure.setMessage("Subject is  assigned to the user");
+//    	    structure.setData(Collections.singletonList(mapToSubjectResponses(subject)));
+//
+//    	    return new ResponseEntity<ResponseStructure<UserResponse>>(HttpStatus.OK);
+//        } else {
+//              throw new IllegalRequestException("Subject is already assigned to the user");
+//        }
+//    }
 
 	private SubjectResponse mapToSubjectResponses(Subject subject) {
 		return SubjectResponse.builder()
@@ -128,4 +128,4 @@ public class SubjectServiceImpl implements SubjectService {
 		}
 	
 	}
-}
+

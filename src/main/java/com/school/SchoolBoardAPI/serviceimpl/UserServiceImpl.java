@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.school.SchoolBoardAPI.entity.User;
 import com.school.SchoolBoardAPI.enums.UserRole;
@@ -15,12 +16,20 @@ import com.school.SchoolBoardAPI.responsedto.UserResponse;
 import com.school.SchoolBoardAPI.service.UserService;
 import com.school.SchoolBoardAPI.utility.ResponseStructure;
 
+import jakarta.websocket.Encoder;
+
 @Service
 public class UserServiceImpl implements UserService {
 	@Autowired
 	private UserRepository userrepository;
 	@Autowired
 	private ResponseStructure<UserResponse> structure;
+	
+	@Autowired
+	private PasswordEncoder encoder;
+	
+	
+	
 	@Override
 	public ResponseEntity<ResponseStructure<UserResponse>> saveUser(UserRequest userrequest) {
 		// Fetch existing users from the repository
@@ -94,7 +103,7 @@ public class UserServiceImpl implements UserService {
 		return User.builder()
 				.username(request.getUsername())
 				.email(request.getEmail())
-				.password(request.getPassword())
+				.password(encoder.encode(request.getPassword()))
 				.firstName(request.getFirstName())
 				.lastName(request.getLastName())
 				.contactNo(request.getContactNo())
