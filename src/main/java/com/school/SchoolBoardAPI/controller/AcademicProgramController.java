@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,6 +21,7 @@ import com.school.SchoolBoardAPI.utility.ResponseStructure;
 public class AcademicProgramController {
 	@Autowired
 	private AcademicProgramService academicProgramservice;
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@PostMapping("/schools/{schoolId}/academicprograms")
 	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> saveAcademicProgram(@PathVariable int schoolId,@RequestBody AcademicProgramRequest academicprogramrequest ){
 		return academicProgramservice.saveacademicprogram(schoolId, academicprogramrequest);
@@ -28,8 +30,10 @@ public class AcademicProgramController {
 	public List<AcademicProgramResponse> findallAcademicPrograms(@PathVariable int schoolId){
 		return academicProgramservice.findallAcademicPrograms(schoolId);
 	}
+
+	@PreAuthorize("hasAuthority('ADMIN')")
    @PutMapping("/academicprograms/{programId}/users/{userId}")
-   private ResponseEntity<ResponseStructure<AcademicProgramResponse>> assignUser(@PathVariable int userId,@PathVariable int programId){
-	   return academicProgramservice.assignUser(userId,programId);
+   public ResponseEntity<ResponseStructure<AcademicProgramResponse>> assignUser(@PathVariable int programId,@PathVariable int userId){
+	   return academicProgramservice.assignUser(programId,userId);
    }
 }

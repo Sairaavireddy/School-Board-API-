@@ -28,34 +28,36 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private PasswordEncoder encoder;
-//	@Autowired
-//	private SubjectServiceImpl subjectserviceimpl;
+	//	@Autowired
+	//	private SubjectServiceImpl subjectserviceimpl;
 
 
 
 	@Override
 	public ResponseEntity<ResponseStructure<UserResponse>> registerAdmin(@Valid UserRequest userrequest) {
-		         if(userrequest.getUserRole()==UserRole.ADMIN) {
-		// Fetch existing users from the repository
-				List<User> existingUsers = userrepository.findAll();
+		if(userrequest.getUserRole()==UserRole.ADMIN) {
+			// Fetch existing users from the repository
+			List<User> existingUsers = userrepository.findAll();
 
-				// Check if the requested role is ADMIN and if an ADMIN already exists
-				if (userrequest.getUserRole() == UserRole.ADMIN && isAdminExists(existingUsers)) {
-					throw new IllegalArgumentException("An ADMIN user already exists.");
-				}
-		         }
-		         else {
-		        	 throw new IllegalArgumentException("only Admin can register");
-		         }
-				User user = userrepository.save(mapToUser(userrequest,false));
-				structure.setStatus(HttpStatus.CREATED.value());
-				structure.setMessage("User saved Sucessfully");
-				structure.setData(mapToUserResponse(user,false));
-				return new ResponseEntity<ResponseStructure<UserResponse>>(structure,HttpStatus.CREATED);
-		         
+			// Check if the requested role is ADMIN and if an ADMIN already exists
+			if (userrequest.getUserRole() == UserRole.ADMIN && isAdminExists(existingUsers)) {
+				throw new IllegalArgumentException("An ADMIN user already exists.");
+			}
+		}
+		else {
+			throw new IllegalArgumentException("only Admin can register");
+		}
+		User user = userrepository.save(mapToUser(userrequest,false));
+		structure.setStatus(HttpStatus.CREATED.value());
+		structure.setMessage("User saved Sucessfully");
+		structure.setData(mapToUserResponse(user,false));
+		return new ResponseEntity<ResponseStructure<UserResponse>>(structure,HttpStatus.CREATED);
+
 	}
+	//	int adminId = userrepository.findByUserRole(UserRole.ADMIN);
+	//	int adminSchoolId = userrepository.findByUserId(adminId);
 
-	
+
 	@Override
 	public ResponseEntity<ResponseStructure<UserResponse>> addOtherUsers(UserRequest userrequest) {
 		// Fetch existing users from the repository
@@ -66,7 +68,13 @@ public class UserServiceImpl implements UserService {
 			throw new IllegalArgumentException("An ADMIN user already exists.");
 		}
 
+
+
 		User user = userrepository.save(mapToUser(userrequest,false));
+
+		if (user.getUserRole() == UserRole.TEACHER || user.getUserRole() == UserRole.STUDENT) {
+			mapUserToAdminSchool(user);
+		}
 		structure.setStatus(HttpStatus.CREATED.value());
 		structure.setMessage("User saved Sucessfully");
 		structure.setData(mapToUserResponse(user,false));
@@ -74,6 +82,16 @@ public class UserServiceImpl implements UserService {
 	}
 
 
+	private void mapUserToAdminSchool(User user) {
+		// Find the admin user
+		User admin =userrepository.findUserByUserRole(UserRole.ADMIN)
+				.orElseThrow(() -> new IllegalStateException("Admin user not found."));
+
+		// Map the user to the same school as the admin
+		user.setSchool(admin.getSchool());
+		userrepository.save(user);
+
+	}
 	@Override
 	public ResponseEntity<ResponseStructure<UserResponse>> findUser(int userId) {
 		return userrepository.findById(userId)
@@ -147,7 +165,7 @@ public class UserServiceImpl implements UserService {
 				.email(user.getEmail())
 				.userRole(user.getUserRole())
 				.isDeleted(user.getIsDeleted())
-				
+
 				.build();
 
 
@@ -164,7 +182,7 @@ public class UserServiceImpl implements UserService {
 
 
 
-	
+
 
 
 

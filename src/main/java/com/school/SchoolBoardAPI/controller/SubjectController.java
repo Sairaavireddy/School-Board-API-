@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,10 +26,12 @@ import lombok.Getter;
 public class SubjectController {
 	@Autowired
 	private SubjectService subjectservice;
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@PostMapping("/academicprograms/{programId}/subjects")
 	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> addSubject(@PathVariable int  programId,@RequestBody SubjectRequest subjectrequest){
 		return subjectservice.addSubject(programId,subjectrequest);
 	}
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@PutMapping("/academicprograms/{programId}")
 	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> updateSubject(@PathVariable  int programId,@RequestBody SubjectRequest subjectRequest){
 		return subjectservice.addSubject(programId, subjectRequest);
@@ -37,8 +40,10 @@ public class SubjectController {
 	public ResponseEntity<ResponseStructure<List<SubjectResponse>>> findAllSubjects(){
 		return subjectservice.findAllSubjects();
 	}
+	@PreAuthorize("hasAuthority('ADMIN')")
 	@PutMapping("/subjects/{subjectId}/users/{userId}")
 	public ResponseEntity<ResponseStructure<UserResponse>> assignSubjectToUser(@PathVariable int subjectId,@PathVariable int userId){
+		//add subject to teacher
 		return subjectservice.assignSubjectToUser(subjectId,userId);
 	}
 

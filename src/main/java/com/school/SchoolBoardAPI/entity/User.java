@@ -9,6 +9,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
@@ -26,8 +27,7 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int userId;
-	@ManyToOne
-	School school;
+	
 	@Column(unique = true)
 	private String username;
 	private String password;
@@ -39,8 +39,12 @@ public class User {
 	private UserRole userRole;
 	public Boolean isDeleted;
 	
-	@OneToMany(mappedBy ="Userlist")
+	@ManyToOne
+	School school;
+	
+	@ManyToMany(mappedBy = "Userlist")
 	private List<AcademicProgram> Aprogramlist;
+	
 	@ManyToOne
 	private Subject subject;
 

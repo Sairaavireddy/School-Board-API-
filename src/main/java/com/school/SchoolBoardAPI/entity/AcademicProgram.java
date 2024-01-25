@@ -38,7 +38,10 @@ public class AcademicProgram {
 	@ManyToMany
 	List<Subject> Slist;
 	
-    @OneToMany
+    @ManyToMany
 	private List<User> Userlist;
+    
+    @OneToMany(mappedBy = "academicProgram")
+    private List<ClassHour> classHourlist;
 
 }

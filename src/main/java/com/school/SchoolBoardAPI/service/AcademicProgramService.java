@@ -8,6 +8,8 @@ import com.school.SchoolBoardAPI.requestdto.AcademicProgramRequest;
 import com.school.SchoolBoardAPI.responsedto.AcademicProgramResponse;
 import com.school.SchoolBoardAPI.utility.ResponseStructure;
 
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
+
 public interface AcademicProgramService {
 	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> saveacademicprogram(int schoolId,AcademicProgramRequest academicprogramrequest);
 
@@ -15,6 +17,6 @@ public interface AcademicProgramService {
 
 	List<AcademicProgramResponse> findallAcademicPrograms(int schoolId);
 
-	 public ResponseEntity<ResponseStructure<AcademicProgramResponse>> assignUser(int userId,int programId);
+	 public ResponseEntity<ResponseStructure<AcademicProgramResponse>> assignUser(int programId,int userId);
 
 }
