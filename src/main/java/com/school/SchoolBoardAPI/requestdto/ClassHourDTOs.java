@@ -8,14 +8,15 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class SchoolRequest {
-	private String schoolName;
-	private long contactNo;
-	private String emailId;
-	private String address;
-	private boolean isDeleted;
-
+@Builder
+public class ClassHourDTOs 
+{
+	private int classHourId;
+	private int subjectId;
+	private int teacherId;
+	private int roomNo;
+	
+	
 }

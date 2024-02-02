@@ -35,8 +35,9 @@ public class School {
 	private long contactNo;
 	private String emailId;
 	private String address;
+	private boolean isDeleted;
 	
     @OneToMany(mappedBy = "school") 
-    List<AcademicProgram> aplist=new ArrayList<AcademicProgram>();
+    List<AcademicProgram> aplist;
 
 }

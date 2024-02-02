@@ -38,8 +38,8 @@ public class SchoolController {
 //	}
 
 	@DeleteMapping("/schools/{schoolId}")
-	public void  deleteSchool(@PathVariable int schoolId) {
-		schoolservice.deleteSchool(schoolId);
+	public ResponseEntity<ResponseStructure<SchoolResponse>> deleteSchool(@PathVariable int schoolId) {
+		return schoolservice.deleteSchool(schoolId);
 	
 	}
 }

@@ -17,5 +17,6 @@ public class SchoolResponse {
 	private long contactNo;
 	private String emailId;
 	private String address;
+	private boolean isDeleted;
 
 }

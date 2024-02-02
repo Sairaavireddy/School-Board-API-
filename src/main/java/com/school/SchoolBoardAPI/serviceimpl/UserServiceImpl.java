@@ -1,5 +1,6 @@
 package com.school.SchoolBoardAPI.serviceimpl;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,9 +8,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import com.school.SchoolBoardAPI.entity.User;
 import com.school.SchoolBoardAPI.enums.UserRole;
+import com.school.SchoolBoardAPI.exception.IllegalRequestException;
 import com.school.SchoolBoardAPI.exception.UserNotFoundExceptionById;
+import com.school.SchoolBoardAPI.repository.AcademicProgramRepository;
+import com.school.SchoolBoardAPI.repository.ClassHourRepository;
 import com.school.SchoolBoardAPI.repository.UserRepository;
 import com.school.SchoolBoardAPI.requestdto.UserRequest;
 import com.school.SchoolBoardAPI.responsedto.UserResponse;
@@ -17,7 +22,6 @@ import com.school.SchoolBoardAPI.service.UserService;
 import com.school.SchoolBoardAPI.utility.ResponseStructure;
 
 import jakarta.validation.Valid;
-import jakarta.websocket.Encoder;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -28,8 +32,10 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private PasswordEncoder encoder;
-	//	@Autowired
-	//	private SubjectServiceImpl subjectserviceimpl;
+	@Autowired
+	private AcademicProgramRepository academicProgramRepository;
+	@Autowired
+	private ClassHourRepository classRepository;
 
 
 
@@ -111,8 +117,12 @@ public class UserServiceImpl implements UserService {
 
 		return userrepository.findById(userId)
 				.map(user -> {
-					user.setIsDeleted(true);
+					if(user.getUserRole().equals(UserRole.ADMIN))
+						throw new IllegalRequestException("Admin cannot be deleted");
+
+					user.setDeleted(true);
 					//					userrepository.deleteById(userId);
+					userrepository.save(user);
 					structure.setStatus(HttpStatus.OK.value());
 					structure.setMessage("user deleted successfully");
 					structure.setData(mapToUserResponse(user,true));
@@ -155,7 +165,7 @@ public class UserServiceImpl implements UserService {
 				.isDeleted(isDeleted)
 				.build();
 	}
-	UserResponse mapToUserResponse(User user, boolean isDeleted) {
+	public static UserResponse mapToUserResponse(User user, boolean isDeleted) {
 		return UserResponse.builder()
 				.userId(user.getUserId())
 				.username(user.getUsername())
@@ -164,13 +174,9 @@ public class UserServiceImpl implements UserService {
 				.contactNo(user.getContactNo())
 				.email(user.getEmail())
 				.userRole(user.getUserRole())
-				.isDeleted(user.getIsDeleted())
-
+				.isDeleted(isDeleted) // Use the parameter here
 				.build();
-
-
 	}
-
 	private boolean isAdminExists(List<User> users) {
 		for (User user : users) {
 			if (user.getUserRole() == UserRole.ADMIN) {
@@ -179,16 +185,21 @@ public class UserServiceImpl implements UserService {
 		}
 		return false;
 	}
+	public void deleteUsers() {
+		List<User> usersToDelete = new ArrayList<User>();
 
+		userrepository.findByIsDeleted(true)
+		.forEach(user ->
+		{
+			user.getClassHourlist().forEach(classHour -> classHour.setUser(null));
+			classRepository.saveAll(user.getClassHourlist());
 
+			user.getAprogramlist().forEach(academicProgram -> academicProgram.setUserlist(null));
+			academicProgramRepository.saveAll(user.getAprogramlist());
 
-
-
-
-
-
-
-
-
+			usersToDelete.add(user);
+		});
+		userrepository.deleteAll(usersToDelete);
+	}
 
 }

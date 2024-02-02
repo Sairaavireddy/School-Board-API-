@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import com.school.SchoolBoardAPI.entity.AcademicProgram;
 import com.school.SchoolBoardAPI.entity.School;
 import com.school.SchoolBoardAPI.entity.User;
 import com.school.SchoolBoardAPI.enums.UserRole;
@@ -16,23 +17,46 @@ public interface UserRepository extends JpaRepository<User,Integer> {
 
 
 
+	List<User>  findByIsDeleted(boolean b);
 
 
-	int findByUserId(int adminId);
+
+
+
+	
+
+
+
+
+
+
+
+
+
+
+
+	
+
+
+
+
+	List<User> findByIsDeletedAndUserRoleIn(boolean b, List<UserRole> asList);
+
 
 	Optional<User> findUserByUserRole(UserRole admin);
 
 
+	List<User> findBySchool(School school);
 
 
 
-	User findByUserRole(UserRole teacher);
+	Object findByUserRoleAndAprogramlist(UserRole valueOf, AcademicProgram program);
 
 
 
+	
 
 
-//	Optional<User> findByIdAndUserRole(int id, UserRole teacher);
 
 
 

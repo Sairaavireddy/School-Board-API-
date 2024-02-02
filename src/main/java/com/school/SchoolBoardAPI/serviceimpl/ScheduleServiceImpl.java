@@ -61,7 +61,7 @@ public class ScheduleServiceImpl implements ScheduleService{
 	                    updatedSchedule.setScheduleId(scheduleId);
 	                    Schedule savedSchedule = schedulerepository.save(updatedSchedule);
 
-	                    ResponseStructure<ScheduleResponse> structure = new ResponseStructure<>();
+	                   
 	                    structure.setStatus(HttpStatus.OK.value());
 	                    structure.setMessage("Schedule updated successfully");
 	                    structure.setData(mapToScheduleResponse(savedSchedule));
@@ -80,13 +80,15 @@ public class ScheduleServiceImpl implements ScheduleService{
 	
 	private ScheduleResponse mapToScheduleResponse(Schedule schedule) {
 		return ScheduleResponse.builder()
+				.scheduleId(schedule.getScheduleId())
 				.opensAt(schedule.getOpensAt())
 				.closesAt(schedule.getClosesAt())
 				.classHoursPerDay(schedule.getClassHoursPerDay())
-				.classHoursLengthInMinutes(schedule.getClassHoursLengthInMinutes())
-				.breakLengthInMinutes(schedule.getBreakLengthInMinutes())
+				.classHoursLengthInMinutes((int)schedule.getClassHoursLengthInMinutes().toMinutes())
+				.breakTime(schedule.getBreakTime())
+				.breakLengthInMinutes((int)schedule.getBreakLengthInMinutes().toMinutes())
 				.lunchTime(schedule.getLunchTime())
-				.lunchLengthInMinutes(schedule.getLunchLengthInMinutes())
+				.lunchLengthInMinutes((int) schedule.getLunchLengthInMinutes().toMinutes())
 				.build();
 
 	}

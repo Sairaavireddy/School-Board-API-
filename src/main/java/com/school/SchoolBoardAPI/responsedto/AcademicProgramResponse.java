@@ -22,5 +22,6 @@ public class AcademicProgramResponse {
 	private String ProgramName;
 	private LocalDate beginsAt;
 	private LocalDate endsAt;
+	private boolean isDeleted;
 	List<Subject> Slist;
 }

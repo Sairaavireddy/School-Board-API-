@@ -30,7 +30,7 @@ public class ScheduleController {
 		return scheduleservice.findSchedule(schoolId);
 	}
 	@PreAuthorize("hasAuthority('ADMIN')")
-	@PutMapping("/schedules/{scheduleId}")
+	@PutMapping("/schedules/{scheduleId}/update")
 	public  ResponseEntity<ResponseStructure<ScheduleResponse>> updateSchedule(@PathVariable int scheduleId,@RequestBody ScheduleRequest schedulerequest){
 		return scheduleservice.updateSchedule(scheduleId,schedulerequest);
 	}

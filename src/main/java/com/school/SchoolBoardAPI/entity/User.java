@@ -6,6 +6,8 @@ import com.school.SchoolBoardAPI.enums.UserRole;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -14,6 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,6 +26,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Entity
 @Builder
+@Data
 public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,16 +40,20 @@ public class User {
 	private String contactNo;
 	@Column(unique = true)
 	private String email;
+//	@Enumerated(EnumType.STRING)
 	private UserRole userRole;
-	public Boolean isDeleted;
+	public boolean isDeleted;
 	
 	@ManyToOne
 	School school;
 	
 	@ManyToMany(mappedBy = "Userlist")
-	private List<AcademicProgram> Aprogramlist;
+	private List<AcademicProgram> aprogramlist;
 	
 	@ManyToOne
 	private Subject subject;
+	
+	@OneToMany(mappedBy ="user")
+	List<ClassHour> classHourlist;
 
 }

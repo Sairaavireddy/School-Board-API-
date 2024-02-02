@@ -32,6 +32,7 @@ public class AcademicProgram {
 	private String ProgramName;
 	private LocalDate beginsAt;
 	private LocalDate endsAt;
+	private boolean isDeleted;
 	@ManyToOne
 	School school;
 	
@@ -43,5 +44,5 @@ public class AcademicProgram {
     
     @OneToMany(mappedBy = "academicProgram")
     private List<ClassHour> classHourlist;
-
+//autorepeateschedule;cronexpesssion
 }
