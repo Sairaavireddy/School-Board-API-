@@ -1,9 +1,13 @@
 package com.school.SchoolBoardAPI.serviceimpl;
 import java.time.Duration;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
 import com.school.SchoolBoardAPI.entity.Schedule;
 import com.school.SchoolBoardAPI.exception.IllegalRequestException;
 import com.school.SchoolBoardAPI.repository.ScheduleRepository;
@@ -26,6 +30,7 @@ public class ScheduleServiceImpl implements ScheduleService{
 		return schoolrepository.findById(schoolId).map(s->{
 			if(s.getSchedule() == null) {
 				Schedule schedule = mapToSchedule(schedulerequest);
+				  validateSchedule(schedule);
 				schedule= schedulerepository.save(schedule);
 				s.setSchedule(schedule);
 				schoolrepository.save(s);
@@ -36,6 +41,19 @@ public class ScheduleServiceImpl implements ScheduleService{
 			}else throw new IllegalRequestException("Schedule object is alredy present");
 		}).orElseThrow(()->new IllegalRequestException("School has only one school id that is of ADMINS"));
 
+	}
+	private void validateSchedule(Schedule schedule) {
+		LocalTime breakTime = schedule.getBreakTime();
+		LocalTime lunchTime = schedule.getLunchTime();
+		LocalTime opensAt = schedule.getOpensAt();
+        Duration classTime=schedule.getClassHoursLengthInMinutes();
+		long totalBreakMinutes = opensAt.until(breakTime, ChronoUnit.MINUTES);
+		long totalLunchMinutes = opensAt.until(lunchTime, ChronoUnit.MINUTES);
+		totalLunchMinutes=totalBreakMinutes-schedule.getLunchLengthInMinutes().toMinutes();
+        if(!(totalBreakMinutes%(classTime.toMinutes())==0&&totalLunchMinutes%classTime.toMinutes()==0)) {
+			throw new IllegalArgumentException("Break and lunch should start after a class hour ends");}
+
+		
 	}
 	@Override
 	public ResponseEntity<ResponseStructure<ScheduleResponse>> findSchedule(int schoolId) {

@@ -194,8 +194,8 @@ public class UserServiceImpl implements UserService {
 			user.getClassHourlist().forEach(classHour -> classHour.setUser(null));
 			classRepository.saveAll(user.getClassHourlist());
 
-			user.getAprogramlist().forEach(academicProgram -> academicProgram.setUserlist(null));
-			academicProgramRepository.saveAll(user.getAprogramlist());
+			user.getListAcademicPrograms().forEach(academicProgram -> academicProgram.setUserlist(null));
+			academicProgramRepository.saveAll(user.getListAcademicPrograms());
 
 			usersToDelete.add(user);
 		});

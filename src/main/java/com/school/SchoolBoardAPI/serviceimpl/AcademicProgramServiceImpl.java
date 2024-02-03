@@ -50,10 +50,7 @@ public class AcademicProgramServiceImpl implements AcademicProgramService {
 			AcademicProgram academicProgram = mapToAcademicProgram(academicprogramrequest);
 			academicProgram.setSchool(s);// Set the school for the program
 
-			//			User teacher=userrepository.findByUserRole(UserRole.TEACHER);
-			//			// Validate and set the teacher for the program
-			//			validateAndSetTeacher(teacher.getUserId(), academicProgram);
-
+			
 			academicProgram = academicprogramrepository.save(academicProgram);
 			s.getAplist().add(academicProgram); // Add to the existing list
 			schoolrepository.save(s);
@@ -64,24 +61,6 @@ public class AcademicProgramServiceImpl implements AcademicProgramService {
 			return new ResponseEntity<ResponseStructure<AcademicProgramResponse>>(structure, HttpStatus.CREATED);
 		}).orElseThrow(() -> new IllegalRequestException("School not found"));
 	}
-
-
-	private void validateAndSetTeacher(int id, AcademicProgram academicProgram) {
-		// Validate if the teacher exists and has the role "TEACHER"
-		User teacher = userrepository.findById(id)
-				.orElseThrow(() -> new IllegalRequestException("Teacher not found with ID"));
-
-		// Validate that the teacher's subject is relevant to the academic program
-		Subject teacherSubject = teacher.getSubject();
-		if (teacherSubject == null || !academicProgram.getSlist().contains(teacherSubject)) {
-			throw new IllegalRequestException("Teacher's subject is not relevant to the academic program");
-		}
-
-		// Set the teacher for the program
-		academicProgram.setUserlist((List<User>) teacher);
-	}
-
-
 	@Override
 	public List<AcademicProgramResponse> findallAcademicPrograms(int schoolId) {
 		Optional<School> optionalSchool = schoolrepository.findById(schoolId);
@@ -104,7 +83,7 @@ public class AcademicProgramServiceImpl implements AcademicProgramService {
 
 		AcademicProgram academicProgram = academicprogramrepository.findById(programId)
 				.orElseThrow(() -> new IllegalRequestException("Academic Program not found"));
-
+		List<Subject> subjects = academicProgram.getSlist();
 		// Validate the user
 		User user = userrepository.findById(userId)
 				.orElseThrow(() -> new UserNotFoundExceptionById("User not found"));
@@ -116,7 +95,9 @@ public class AcademicProgramServiceImpl implements AcademicProgramService {
 		if (user.getUserRole() != UserRole.TEACHER && user.getUserRole() != UserRole.STUDENT) {
 			throw new IllegalRequestException("User must have role TEACHER or STUDENT.");
 		}
-
+		else if(user.getUserRole().equals(UserRole.TEACHER)&&!subjects.contains(user.getSubject())){
+			throw new IllegalRequestException("Teacher Subject doesnot matches");
+		}
 		// Add the user to the academic program
 		if (!academicProgram.getUserlist().contains(user)) {
 			academicProgram.getUserlist().add(user);
@@ -155,18 +136,20 @@ public class AcademicProgramServiceImpl implements AcademicProgramService {
 	}
 
 
-//	@Override
-//	public ResponseEntity<ResponseStructure<List<User>>> findUsersInProgram(int programId, String userRole) {
-//		List<User> users =academicprogramrepository.findById(programId).map(program->userrepository.findByUserRoleAndAprogramlist(UserRole.valueOf(userRole.toUpperCase()),program))
-//				.orElseThrow();
-//		ResponseStructure<List<User>> responseStructure = new ResponseStructure<List<User>>();
-//		responseStructure.setStatus(HttpStatus.OK.value());
-//		responseStructure.setMessage("Fetched successfully!!!");
-//		responseStructure.setData (users);
-//
-//		return new ResponseEntity<ResponseStructure<List<User>>> (responseStructure, HttpStatus.OK);
-//
-//	}
+	@Override
+	public ResponseEntity<ResponseStructure<List<User>>> findUsersInProgram(int programId, String userRole) {
+		List<User> users = academicprogramrepository.findById(programId)
+		        .map(program -> userrepository.findByUserRoleAndListAcademicPrograms(UserRole.valueOf(userRole.toUpperCase()), program))
+		        .orElseThrow();
+
+		ResponseStructure<List<User>> responseStructure = new ResponseStructure<List<User>>();
+		responseStructure.setStatus(HttpStatus.OK.value());
+		responseStructure.setMessage("Fetched successfully!!!");
+		responseStructure.setData (users);
+
+		return new ResponseEntity<ResponseStructure<List<User>>> (responseStructure, HttpStatus.OK);
+
+	}
 
 
 	@Override

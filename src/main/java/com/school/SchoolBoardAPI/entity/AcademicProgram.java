@@ -44,5 +44,5 @@ public class AcademicProgram {
     
     @OneToMany(mappedBy = "academicProgram")
     private List<ClassHour> classHourlist;
-//autorepeateschedule;cronexpesssion
+
 }

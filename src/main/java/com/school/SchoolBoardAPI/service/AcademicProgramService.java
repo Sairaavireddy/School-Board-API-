@@ -24,7 +24,7 @@ public interface AcademicProgramService {
 
 	
 
-//	ResponseEntity<ResponseStructure<List<User>>> findUsersInProgram(int programId, String userRole);
+	ResponseEntity<ResponseStructure<List<User>>> findUsersInProgram(int programId, String userRole);
 
 	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> deleteprogram(int programId);
 

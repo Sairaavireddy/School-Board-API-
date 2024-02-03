@@ -1,5 +1,7 @@
 package com.school.SchoolBoardAPI.controller;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.school.SchoolBoardAPI.requestdto.ClassHourDTOs;
-import com.school.SchoolBoardAPI.requestdto.ClassHourRequest;
+import com.school.SchoolBoardAPI.requestdto.ExcelRequestDto;
 import com.school.SchoolBoardAPI.responsedto.ClassHourResponse;
 import com.school.SchoolBoardAPI.service.ClassHourService;
 import com.school.SchoolBoardAPI.utility.ResponseStructure;
@@ -32,8 +34,12 @@ public class ClassHourController {
 		return classHourService.updateClassHour(classHourDtoList);
 	}
 	@PostMapping("/nextweekclasshours")
-	public  ResponseEntity<String> AutoRepeatNextWeekClassHours(){
+	public  ResponseEntity<ResponseStructure<List<ClassHourResponse>>> AutoRepeatNextWeekClassHours(){
 		return classHourService.AutoRepeatNextWeekClassHours();
+	}
+	@PostMapping("/academic-programs/{programId}/class-hours/write-excel")
+	public ResponseEntity<String> excelSheet(@PathVariable int programId,@RequestBody ExcelRequestDto excelRequestDto) throws Exception{
+		return classHourService.excelSheet(programId,excelRequestDto);
 	}
 
 }

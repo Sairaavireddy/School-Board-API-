@@ -14,31 +14,8 @@ import com.school.SchoolBoardAPI.enums.UserRole;
 public interface UserRepository extends JpaRepository<User,Integer> {
 
 	Optional<User> findByusername(String username);
-
-
-
+	
 	List<User>  findByIsDeleted(boolean b);
-
-
-
-
-
-	
-
-
-
-
-
-
-
-
-
-
-
-	
-
-
-
 
 	List<User> findByIsDeletedAndUserRoleIn(boolean b, List<UserRole> asList);
 
@@ -49,8 +26,7 @@ public interface UserRepository extends JpaRepository<User,Integer> {
 	List<User> findBySchool(School school);
 
 
-
-	Object findByUserRoleAndAprogramlist(UserRole valueOf, AcademicProgram program);
+	List<User> findByUserRoleAndListAcademicPrograms(UserRole valueOf, AcademicProgram program);
 
 
 

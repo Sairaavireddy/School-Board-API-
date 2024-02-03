@@ -38,10 +38,10 @@ public class AcademicProgramController {
    public ResponseEntity<ResponseStructure<AcademicProgramResponse>> assignUser(@PathVariable int programId,@PathVariable int userId){
 	   return academicProgramservice.assignUser(programId,userId);
    }
-//	@GetMapping("/academic-programs/{programId}/user-roles/{userRole}/users")
-//	public ResponseEntity<ResponseStructure<List<User>>>findUsersInProgram(@PathVariable int programId,@PathVariable String userRole){
-//		return academicProgramservice.findUsersInProgram(programId,userRole);
-//	}
+	@GetMapping("/academic-programs/{programId}/user-roles/{userRole}/users")
+	public ResponseEntity<ResponseStructure<List<User>>>findUsersInProgram(@PathVariable int programId,@PathVariable String userRole){
+		return academicProgramservice.findUsersInProgram(programId,userRole);
+	}
 	@DeleteMapping("/academicprogram/{programId}")
 	public ResponseEntity<ResponseStructure<AcademicProgramResponse>> deleteprogram(@PathVariable int programId){
 		return academicProgramservice.deleteprogram(programId);
