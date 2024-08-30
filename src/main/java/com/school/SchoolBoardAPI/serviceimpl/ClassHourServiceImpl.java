@@ -2,6 +2,7 @@ package com.school.SchoolBoardAPI.serviceimpl;
 
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -14,7 +15,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.apache.poi.ss.usermodel.Row;
@@ -22,8 +22,10 @@ import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.school.SchoolBoardAPI.entity.AcademicProgram;
 import com.school.SchoolBoardAPI.entity.ClassHour;
@@ -66,7 +68,7 @@ public class ClassHourServiceImpl implements ClassHourService {
 			throw new IllegalArgumentException("Program Does Not Exist!!!");
 
 		LocalDate recordStartDate = (program.getBeginsAt().isAfter(LocalDate.now()))? program.getBeginsAt() : LocalDate.now();
-        
+
 		List<ClassHour> generatedClassHours = generateClassHoursForWeek(program, recordStartDate);
 		List<ClassHour> savedClassHours = classHourRepository.saveAll(generatedClassHours);
 
@@ -141,71 +143,71 @@ public class ClassHourServiceImpl implements ClassHourService {
 
 
 	private List<ClassHour> generateClassHoursForWeek(AcademicProgram program, LocalDate startingDate) {
-	    List<ClassHour> classHours = new ArrayList<>();
-	    Schedule schedule = program.getSchool().getSchedule();
-	    Duration classDuration = schedule.getClassHoursLengthInMinutes();
-	    Duration lunchDuration = schedule.getLunchLengthInMinutes();
-	    Duration breakDuration = schedule.getBreakLengthInMinutes();
-	    LocalTime breakTime = schedule.getBreakTime();
-	    LocalTime lunchTime = schedule.getLunchTime();
-	    Duration topUp = Duration.ofMinutes(2);
+		List<ClassHour> classHours = new ArrayList<>();
+		Schedule schedule = program.getSchool().getSchedule();
+		Duration classDuration = schedule.getClassHoursLengthInMinutes();
+		Duration lunchDuration = schedule.getLunchLengthInMinutes();
+		Duration breakDuration = schedule.getBreakLengthInMinutes();
+		LocalTime breakTime = schedule.getBreakTime();
+		LocalTime lunchTime = schedule.getLunchTime();
+		Duration topUp = Duration.ofMinutes(2);
 
-	    // Find the next Monday from the starting date
-	    LocalDate nextMonday = startingDate.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
+		// Find the next Monday from the starting date
+		LocalDate nextMonday = startingDate.with(TemporalAdjusters.next(DayOfWeek.MONDAY));
 
-	    for (int dayOfWeek = 0; dayOfWeek < 6; dayOfWeek++) { // Iterate from Monday to Saturday
+		for (int dayOfWeek = 0; dayOfWeek < 6; dayOfWeek++) { // Iterate from Monday to Saturday
 
-	        LocalDate currentDate = nextMonday.plusDays(dayOfWeek);
-	        LocalTime opensAt = schedule.getOpensAt();
-	        LocalTime endsAt = opensAt.plus(classDuration);
-	        classStatus status = classStatus.NOT_SCHEDULED;
+			LocalDate currentDate = nextMonday.plusDays(dayOfWeek);
+			LocalTime opensAt = schedule.getOpensAt();
+			LocalTime endsAt = opensAt.plus(classDuration);
+			classStatus status = classStatus.NOT_SCHEDULED;
 
-	        for (int classPerDay = schedule.getClassHoursPerDay(); classPerDay > 0; classPerDay--) {
-	            ClassHour classHour = ClassHour.builder()
-	                    .beginsAt(LocalDateTime.of(currentDate, opensAt))
-	                    .endsAt(LocalDateTime.of(currentDate, endsAt))
-	                    .roomNo(0)
-	                    .classstatus(status)
-	                    .academicProgram(program)
-	                    .build();
+			for (int classPerDay = schedule.getClassHoursPerDay(); classPerDay > 0; classPerDay--) {
+				ClassHour classHour = ClassHour.builder()
+						.beginsAt(LocalDateTime.of(currentDate, opensAt))
+						.endsAt(LocalDateTime.of(currentDate, endsAt))
+						.roomNo(0)
+						.classstatus(status)
+						.academicProgram(program)
+						.build();
 
-	            classHours.add(classHour);
+				classHours.add(classHour);
 
-	            if (breakTime.isAfter(opensAt.minus(topUp)) && breakTime.isBefore(endsAt.plus(topUp))) {
-	                opensAt = opensAt.plus(breakDuration);
-	                endsAt = endsAt.plus(breakDuration);
-	                ClassHour classHour2 = ClassHour.builder()
-		                    .beginsAt(LocalDateTime.of(currentDate, opensAt.minus(breakDuration)))
-		                    .endsAt(LocalDateTime.of(currentDate, opensAt))
-		                    .roomNo(0)
-		                    .classstatus(classStatus.BREAK_TIME)
-		                    .academicProgram(program)
-		                    .build();
+				if (breakTime.isAfter(opensAt.minus(topUp)) && breakTime.isBefore(endsAt.plus(topUp))) {
+					opensAt = opensAt.plus(breakDuration);
+					endsAt = endsAt.plus(breakDuration);
+					ClassHour classHour2 = ClassHour.builder()
+							.beginsAt(LocalDateTime.of(currentDate, opensAt.minus(breakDuration)))
+							.endsAt(LocalDateTime.of(currentDate, opensAt))
+							.roomNo(0)
+							.classstatus(classStatus.BREAK_TIME)
+							.academicProgram(program)
+							.build();
 
-		            classHours.add(classHour2);
-	                
-	            } else if (lunchTime.isAfter(opensAt.minus(topUp)) && lunchTime.isBefore(endsAt.plus(topUp))) {
-	                opensAt = opensAt.plus(lunchDuration);
-	                endsAt = endsAt.plus(lunchDuration);
-	                ClassHour classHour2 = ClassHour.builder()
-		                    .beginsAt(LocalDateTime.of(currentDate, opensAt.minus(lunchDuration )))
-		                    .endsAt(LocalDateTime.of(currentDate, opensAt))
-		                    .roomNo(0)
-		                    .classstatus(classStatus.LUNCH_TIME)
-		                    .academicProgram(program)
-		                    .build();
+					classHours.add(classHour2);
 
-		            classHours.add(classHour2);
-	            }
+				} else if (lunchTime.isAfter(opensAt.minus(topUp)) && lunchTime.isBefore(endsAt.plus(topUp))) {
+					opensAt = opensAt.plus(lunchDuration);
+					endsAt = endsAt.plus(lunchDuration);
+					ClassHour classHour2 = ClassHour.builder()
+							.beginsAt(LocalDateTime.of(currentDate, opensAt.minus(lunchDuration )))
+							.endsAt(LocalDateTime.of(currentDate, opensAt))
+							.roomNo(0)
+							.classstatus(classStatus.LUNCH_TIME)
+							.academicProgram(program)
+							.build();
 
-	            opensAt = endsAt;
-	            endsAt = opensAt.plus(classDuration);
-	        }
-	    }
+					classHours.add(classHour2);
+				}
 
-	    return classHours;
+				opensAt = endsAt;
+				endsAt = opensAt.plus(classDuration);
+			}
+		}
+
+		return classHours;
 	}
-	
+
 	private ClassHourResponse mapToResponse(ClassHour classHour) {
 		return ClassHourResponse.builder().beginsAt(classHour.getBeginsAt())
 				.endsAt(classHour.getEndsAt()).roomNo(classHour.getRoomNo()).classstatus(classHour.getClassstatus())
@@ -215,35 +217,35 @@ public class ClassHourServiceImpl implements ClassHourService {
 	@Override
 	public ResponseEntity<ResponseStructure<List<ClassHourResponse>>> AutoRepeatNextWeekClassHours() {
 		ClassHour lastRecord = classHourRepository.findTopByOrderByClassHourIdDesc().get();
-		 LocalDate endDate =lastRecord.getBeginsAt().toLocalDate();
-			AcademicProgram academicProgram=lastRecord.getAcademicProgram();
-			List<ClassHour> previousWeekClassHours = classHourRepository.findByAcademicProgramAndBeginsAtBetween(academicProgram, endDate.minusDays(5).atStartOfDay(), endDate.atStartOfDay().plusDays(1));
-        if (previousWeekClassHours.isEmpty()) {
-             throw new IllegalArgumentException("The classHour Is Empty");
-        }
-        List<ClassHour> savedClassHours = new ArrayList<>();
-        List<ClassHour> nextWeekClassHours = generateClassHoursForWeek(previousWeekClassHours.get(0).getAcademicProgram(), endDate);
-        for (ClassHour nextWeek : nextWeekClassHours) {
-            for (ClassHour previous : previousWeekClassHours) {
-               if(nextWeek.getBeginsAt().getDayOfWeek()==previous.getBeginsAt().getDayOfWeek()&&nextWeek.getBeginsAt().toLocalTime().equals(previous.getBeginsAt().toLocalTime())) {
-            	   if(previous.getClassstatus()!=classStatus.NOT_SCHEDULED) {
-            		   nextWeek.setRoomNo(previous.getRoomNo());
-            		   nextWeek.setClassstatus(classStatus.UPCOMING);
-            		   nextWeek.setUser(previous.getUser());
-            		   nextWeek.setSubject(previous.getSubject());
-            		   
-            	   }
-            	   ClassHour classHour=classHourRepository.save(nextWeek);
-        		   savedClassHours.add(classHour);
-               }
-            }
-        }
-      
-        
-        List<ClassHourResponse> classHourResponses = savedClassHours.stream().map(this::mapToResponse).collect(Collectors.toList());
+		LocalDate endDate =lastRecord.getBeginsAt().toLocalDate();
+		AcademicProgram academicProgram=lastRecord.getAcademicProgram();
+		List<ClassHour> previousWeekClassHours = classHourRepository.findByAcademicProgramAndBeginsAtBetween(academicProgram, endDate.minusDays(5).atStartOfDay(), endDate.atStartOfDay().plusDays(1));
+		if (previousWeekClassHours.isEmpty()) {
+			throw new IllegalArgumentException("The classHour Is Empty");
+		}
+		List<ClassHour> savedClassHours = new ArrayList<>();
+		List<ClassHour> nextWeekClassHours = generateClassHoursForWeek(previousWeekClassHours.get(0).getAcademicProgram(), endDate);
+		for (ClassHour nextWeek : nextWeekClassHours) {
+			for (ClassHour previous : previousWeekClassHours) {
+				if(nextWeek.getBeginsAt().getDayOfWeek()==previous.getBeginsAt().getDayOfWeek()&&nextWeek.getBeginsAt().toLocalTime().equals(previous.getBeginsAt().toLocalTime())) {
+					if(previous.getClassstatus()!=classStatus.NOT_SCHEDULED) {
+						nextWeek.setRoomNo(previous.getRoomNo());
+						nextWeek.setClassstatus(classStatus.UPCOMING);
+						nextWeek.setUser(previous.getUser());
+						nextWeek.setSubject(previous.getSubject());
 
-        
-        ResponseStructure<List<ClassHourResponse>> responseStructure = new ResponseStructure<>();
+					}
+					ClassHour classHour=classHourRepository.save(nextWeek);
+					savedClassHours.add(classHour);
+				}
+			}
+		}
+
+
+		List<ClassHourResponse> classHourResponses = savedClassHours.stream().map(this::mapToResponse).collect(Collectors.toList());
+
+
+		ResponseStructure<List<ClassHourResponse>> responseStructure = new ResponseStructure<>();
 		responseStructure.setStatus(HttpStatus.CREATED.value());
 		responseStructure.setMessage("ClassHours updated successfully!!!!");
 		responseStructure.setData(classHourResponses);
@@ -304,6 +306,57 @@ public class ClassHourServiceImpl implements ClassHourService {
 
 		return ResponseEntity.ok("Excel sheet generated sucessfully");
 	}
+
+	@Override
+	public ResponseEntity<?> WriteToexcelSheet(int programId, LocalDate fromDate, LocalDate toDate,
+			MultipartFile file) throws Exception {
+		LocalDateTime startDateTime=fromDate.atStartOfDay();
+		LocalDateTime endDateTime=toDate.atStartOfDay().plusDays(1);
+		DateTimeFormatter time = DateTimeFormatter.ofPattern("HH:mm"); 
+		DateTimeFormatter date = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+		XSSFWorkbook workbook=new XSSFWorkbook(file.getInputStream());
+		AcademicProgram program=academicProgramRepository.findById(programId).get();
+		List<ClassHour> listClassHours = classHourRepository.findByAcademicProgramAndBeginsAtBetween(program, startDateTime, endDateTime);
+		workbook.forEach(sheet->{
+			int rowNumber=0;
+			Row header=sheet.createRow(rowNumber);
+			header.createCell(0).setCellValue("Begin Date");
+			header.createCell(1).setCellValue("Begin Time");
+			header.createCell(2).setCellValue("End Date");
+			header.createCell(3).setCellValue("End Time");
+			header.createCell(4).setCellValue("Subject");
+			header.createCell(5).setCellValue("Teacher");
+			header.createCell(6).setCellValue("Room No");
+			for(ClassHour classHour : listClassHours) {
+				Row row = sheet.createRow(++rowNumber);
+				row.createCell(0).setCellValue(date.format(classHour.getBeginsAt()));
+				row.createCell(1).setCellValue(time.format(classHour.getBeginsAt()));
+				row.createCell(2).setCellValue(date.format(classHour.getEndsAt()));
+				row.createCell(3).setCellValue(time.format(classHour.getEndsAt()));
+				if(classHour.getSubject()==null&&classHour.getUser()==null) {
+					row.createCell(4).setCellValue("");
+					row.createCell(5).setCellValue("");	
+				}else {
+					row.createCell(4).setCellValue(classHour.getSubject().getSubjectName());
+					row.createCell(5).setCellValue(classHour.getUser().getUsername());	
+				}
+				row.createCell(6).setCellValue(classHour.getRoomNo());
+			}
+		});
+		ByteArrayOutputStream fileOutputstream=new ByteArrayOutputStream();
+		workbook.write(fileOutputstream);
+		  workbook.close();
+		  byte[] byteData=fileOutputstream.toByteArray();
+		  
+		  return ResponseEntity.ok()
+					.header("CONTENT_DISPOSITION", "attachment; filename="+file.getOriginalFilename())
+					.contentType(MediaType.APPLICATION_OCTET_STREAM)
+					.body(byteData);
+		
+	}
+
+
+
 
 
 }	

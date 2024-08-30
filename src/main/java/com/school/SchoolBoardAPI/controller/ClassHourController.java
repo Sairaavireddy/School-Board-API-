@@ -1,7 +1,6 @@
 package com.school.SchoolBoardAPI.controller;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.school.SchoolBoardAPI.requestdto.ClassHourDTOs;
 import com.school.SchoolBoardAPI.requestdto.ExcelRequestDto;
@@ -40,6 +41,11 @@ public class ClassHourController {
 	@PostMapping("/academic-programs/{programId}/class-hours/write-excel")
 	public ResponseEntity<String> excelSheet(@PathVariable int programId,@RequestBody ExcelRequestDto excelRequestDto) throws Exception{
 		return classHourService.excelSheet(programId,excelRequestDto);
+	}
+	@PostMapping("/academic-programs/{programId}/class-hours/from/{fromDate}/to/{toDate}/write-excel")
+	public ResponseEntity<?> writeToexcelSheet(@PathVariable int programId, @PathVariable LocalDate fromDate,@PathVariable LocalDate toDate,
+       @RequestParam MultipartFile file) throws Exception{
+		return classHourService.WriteToexcelSheet(programId,fromDate,toDate,file);
 	}
 
 }
